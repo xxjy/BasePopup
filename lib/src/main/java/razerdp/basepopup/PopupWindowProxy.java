@@ -1,12 +1,14 @@
 package razerdp.basepopup;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 
@@ -167,6 +169,13 @@ class PopupWindowProxy extends PopupWindow implements ClearMemoryObject {
                     return mWindowManagerProxy;
                 }
                 WindowManager windowManager = (WindowManager) super.getSystemService(name);
+                if (helper.mPopupWindow.ownerAnchorParent instanceof Dialog) {
+                    Window window = ((Dialog) helper.mPopupWindow.ownerAnchorParent).getWindow();
+                    WindowManager dialogWindowManager = window != null ? window.getWindowManager() : null;
+                    if (dialogWindowManager != null) {
+                        windowManager = dialogWindowManager;
+                    }
+                }
                 mWindowManagerProxy = new WindowManagerProxy(windowManager, helper);
                 return mWindowManagerProxy;
             }
